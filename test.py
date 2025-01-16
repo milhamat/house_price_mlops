@@ -5,7 +5,7 @@ import numpy as np
 # Add the root directory to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 
-from model.load_model import LoadModel 
+from model.models import LoadModel 
 
 load = LoadModel()
 
