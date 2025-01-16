@@ -1,8 +1,5 @@
-import os 
-import sys
 import uuid
 import pandas as pd
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 from model.models import LoadModel
 from fastapi import FastAPI, HTTPException
 from schema import PredictionRequest, PredictionResponse
