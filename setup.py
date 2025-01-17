@@ -19,7 +19,5 @@ def get_requirements(file_path:str) -> List[str]:
 setup(
     name="house_price_mlops",
     version="0.1",
-    packages=find_packages(),  # Automatically finds all packages under `src`
-    # package_dir={"": "src"},  # Treat `src` as the root for packages
-    # install_requires =get_requirements('requirements.txt')
+    packages=find_packages()
 )

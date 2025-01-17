@@ -17,7 +17,7 @@ class PredictionRequest(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Prediction response schema"""
-    SalePrice: float
+    SalePrice: str
     prediction_timestamp: str
     prediction_id: str
     

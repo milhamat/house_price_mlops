@@ -21,10 +21,11 @@ async def predict(data: PredictionRequest):
         
         # Make prediction
         prediction = model.predict(input_df)
+        prediction = np.expm1(prediction) 
         
         # Create response
         response = PredictionResponse(
-            SalePrice=prediction,
+            SalePrice=f'${int(prediction[0])}',
             prediction_timestamp=str(pd.Timestamp.now()),
             prediction_id=str(uuid.uuid4())
         )
