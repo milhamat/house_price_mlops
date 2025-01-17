@@ -1,8 +1,9 @@
 import uuid
+import numpy as np
 import pandas as pd
-from model.models import LoadModel
+from src.model.models import LoadModel
 from fastapi import FastAPI, HTTPException
-from schema import PredictionRequest, PredictionResponse
+from src.api.schema import PredictionRequest, PredictionResponse
 
 app = FastAPI(title="house price prediction API")
 
@@ -31,6 +32,5 @@ async def predict(data: PredictionRequest):
         raise HTTPException(status_code=400, detail=str(e))
     
     return response
-
 
 

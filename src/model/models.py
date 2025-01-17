@@ -1,22 +1,23 @@
 import os
-import mlflow
+# import mlflow
+import pickle
 
 
 class LoadModel:
-    def __init__(self, model_dir = "artifacts/models"):
-        self.model_dir = model_dir
+    def __init__(self, model_path = "artifacts"):
+        self.model_path = model_path
 
     def load_model(self):
         """
         Load the model from the specified directory using MLflow's pyfunc.
         """
         # Get the absolute path to the model
-        model_path = os.path.abspath(self.model_dir)
-        # model_path = self.model_dir
         try:
             # Load the model using MLflow
-            model = mlflow.pyfunc.load_model(model_path)
-            print("Model loaded successfully from:", model_path)
+            model_path = os.path.join(f"{self.model_path}", "models", "model.pkl")
+            with open(model_path, "rb") as f:
+                model = pickle.load(f)
+            print("Model loaded successfully from:", self.model_path)
             return model
         except Exception as e:
             print(f"Error loading model: {e}")
