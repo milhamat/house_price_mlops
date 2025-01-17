@@ -161,3 +161,4 @@ cython_debug/
 mlruns/
 house_price_mlops.egg-info/
 .vscode/
+mlflow.db

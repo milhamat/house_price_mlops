@@ -1,13 +1,15 @@
+import os
+import pickle
 import mlflow # type: ignore
 import pandas as pd
 import numpy as np
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from sklearn.model_selection import train_test_split
+from mlflow.models.signature import infer_signature
 from src.utils.config import get_artifact_path
 from src.utils.config import log_message
 from sklearn import ensemble
-import os
-import pickle
+
 
 def train_and_log_model():
     # Load dataset
@@ -46,7 +48,7 @@ def train_and_log_model():
     mse = mean_squared_error(y_test, y_pred)
     mae = mean_absolute_error(y_test, y_pred)
 
-    mlflow.set_tag("Training Info", "Basic LR model for house price prediction")
+    mlflow.set_tracking_uri('sqlite:///mlflow.db')
 
     # Log model with MLflow
     with mlflow.start_run(nested=True):
@@ -54,13 +56,21 @@ def train_and_log_model():
         mlflow.log_metric("RMSE", rmse)
         mlflow.log_metric("MSE", mse)
         mlflow.log_metric("MAE", mae)
+        
+        mlflow.set_tag("Training Info", "house price prediction")
+        # Infer and log model signature
+        signature = infer_signature(x_train, gbr.predict(x_train))
+        
         mlflow.sklearn.log_model(gbr, 
-                                 artifact_path="models")
-
-        # print(f"Model logged with MSE: {mse}")
+                                 artifact_path="models",
+                                 signature=signature,
+                                 input_example=x_test[:5])
+        
+        # Log the training dataset as an artifact
+        train_data_path = get_artifact_path("train.csv")
+        mlflow.log_artifact(train_data_path, artifact_path="datasets")
 
     # Save the model locally
-    # model_path = os.path.join("artifacts", "models", "model.pkl")
     model_path = get_artifact_path("models", "model.pkl")
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     with open(model_path, "wb") as f:
