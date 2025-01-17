@@ -1,5 +1,6 @@
 import os
 import pickle
+from src.utils.config import log_message
 
 
 class LoadModel:
@@ -16,10 +17,11 @@ class LoadModel:
             model_path = os.path.join(f"{self.model_path}", "models", "model.pkl")
             with open(model_path, "rb") as f:
                 model = pickle.load(f)
-            print("Model loaded successfully from:", self.model_path)
+            log_message(f"Model loaded successfully from: {self.model_path}", "INFO")
             return model
         except Exception as e:
             print(f"Error loading model: {e}")
+            log_message(f"Error loading model: {e}", "INFO")
             raise
     
     def predict(self, data):
