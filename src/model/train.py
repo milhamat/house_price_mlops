@@ -68,9 +68,12 @@ class TrainModel():
         log_message(f"MAE : {mae}", "INFO")
 
         mlflow.set_tracking_uri('sqlite:///mlflow.db')
+        mlflow.set_experiment("House Price Prediction v.1")
+        mlflow.enable_system_metrics_logging()
 
         # Log model with MLflow
         with mlflow.start_run(nested=True):
+            mlflow.log_params(self.model_params)
             mlflow.log_metric("R2", r2)
             mlflow.log_metric("RMSE", rmse)
             mlflow.log_metric("MSE", mse)
@@ -83,11 +86,12 @@ class TrainModel():
             mlflow.sklearn.log_model(gbr, 
                                     artifact_path="models",
                                     signature=signature,
-                                    input_example=x_test[:5])
+                                    input_example=x_test[:5],
+                                    registered_model_name="tracking-quickstart-house-price-prediction",
+                                    )
             
             # Log the training dataset as an artifact
-            train_data_path = get_artifact_path("train.csv")
-            mlflow.log_artifact(train_data_path, artifact_path="datasets")
+            mlflow.log_artifact(data_path, artifact_path="datasets")
 
         # Save the model locally
         log_message("model.pkl saving", "INFO")
