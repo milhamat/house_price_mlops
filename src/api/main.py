@@ -10,9 +10,17 @@ app = FastAPI(title="house price prediction API")
 model = LoadModel()
 
 @app.post("/predict", response_model=PredictionResponse)
-async def predict(data: PredictionRequest):
-    """
-    Predict the house price using the input data.
+async def predict(data: PredictionRequest)-> PredictionResponse:
+    """Make a prediction using the trained model.
+
+    Args:
+        data (PredictionRequest): The input data for making the prediction.
+
+    Raises:
+        HTTPException: An error occurred while making the prediction.
+
+    Returns:
+        _type_: The prediction response.
     """
     try:
         # Convert the input data to a pandas DataFrame

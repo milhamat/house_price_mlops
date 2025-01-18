@@ -1,10 +1,11 @@
 import os
 import pickle
+import pandas as pd
 from src.utils.config import log_message
 
 
 class LoadModel:
-    def __init__(self, model_path = "artifacts"):
+    def __init__(self, model_path:str = "artifacts"):
         self.model_path = model_path
 
     def load_model(self):
@@ -25,7 +26,7 @@ class LoadModel:
             log_message(f"Error loading model: {e}", "ERROR")
             raise
     
-    def predict(self, data):
+    def predict(self, data:pd.DataFrame)-> pd.DataFrame:
         log_message("Model predicting..", "INFO")
         model = self.load_model()
         log_message("Model predicting successfully...", "SUCCESS")

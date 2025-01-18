@@ -1,6 +1,7 @@
 import os
+import yaml
 
-def get_artifact_path(*path_parts):
+def get_artifact_path(*path_parts: str) -> str:
     """
     Helper function to construct a full path to an artifact file.
     
@@ -13,7 +14,7 @@ def get_artifact_path(*path_parts):
     return os.path.join("artifacts", *path_parts)
 
 
-def log_message(message, level="INFO"):
+def log_message(message:str, level="INFO"):
     """
     Helper function to log messages to the console.
     
@@ -22,3 +23,19 @@ def log_message(message, level="INFO"):
         level (str): The log level (default is "INFO").
     """
     print(f"[{level}] {message}")
+
+def read_yaml(file_path: str)-> dict:
+    """ Function to read yaml file
+
+    Args:
+        file_path (_type_): The path to the yaml file
+
+    Returns:
+        _type_: The content of the yaml file
+    """
+    with open(file_path, 'r') as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+            return None

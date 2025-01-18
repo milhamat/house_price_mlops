@@ -11,7 +11,7 @@ class PredictionRequest(BaseModel):
     GrLivArea: float
     FullBath: float
     HalfBath: float
-    BedroomAbvGr: float
+    BedroomAbvGrd: float
     TotRmsAbvGrd: float
     
 

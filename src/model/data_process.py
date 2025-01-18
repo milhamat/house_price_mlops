@@ -1,10 +1,11 @@
 import numpy as np
+import pandas as pd
 
 class Preprocessing:
     def __init__(self):
         pass
 
-    def preprocess(self, data):
+    def preprocess(self, data:pd.DataFrame)-> tuple:
         
         selected = ['Id', 'LotFrontage', 'LotArea', 'OverallQual', 'YearBuilt',
         'YearRemodAdd', 'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr',
