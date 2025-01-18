@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from sklearn.model_selection import train_test_split
 from mlflow.models.signature import infer_signature
+from src.model.data_process import Preprocessing
 from src.utils.config import get_artifact_path
 from src.utils.config import log_message
 from sklearn import ensemble
@@ -15,20 +16,18 @@ def train_and_log_model():
     # Load dataset
     # data_path = os.path.join("artifacts", "train.csv")
     data_path = get_artifact_path("train.csv")
-    train = pd.read_csv(data_path)
+    data = pd.read_csv(data_path)
+    
+     
 
     # DATA PREPROCESSING
-    selected = ['Id', 'LotFrontage', 'LotArea', 'OverallQual', 'YearBuilt',
-        'YearRemodAdd', 'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr',
-        'TotRmsAbvGrd','SalePrice']
-    train = train[selected]
-
-    train_labels = train.pop('SalePrice')
-
-    features = train
-    features['LotFrontage'] = features['LotFrontage'].fillna(features['LotFrontage'].mean())
-    train_labels = np.log(train_labels)
-    train_features = features.drop('Id', axis=1).select_dtypes(include=[np.number]).values
+    try:
+        log_message("Starting data preprocessing...", "INFO")
+        train_features, train_labels = Preprocessing().preprocess(data)
+        log_message("Data preprocessing success...", "INFO")
+    except Exception as e:
+        log_message(f"Error in data preprocessing: {e}", "ERROR")
+        raise
 
     # Split the data into training and test sets 
     x_train, x_test, y_train, y_test = train_test_split(train_features, train_labels, test_size=0.1, random_state=0)
