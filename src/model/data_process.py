@@ -1,15 +1,15 @@
 import numpy as np
 
 class Preprocessing:
-    def __init__(self, selected):
-        self.selected = selected
+    def __init__(self):
+        pass
 
     def preprocess(self, data):
         
-        self.selected = ['Id', 'LotFrontage', 'LotArea', 'OverallQual', 'YearBuilt',
+        selected = ['Id', 'LotFrontage', 'LotArea', 'OverallQual', 'YearBuilt',
         'YearRemodAdd', 'GrLivArea', 'FullBath', 'HalfBath', 'BedroomAbvGr',
         'TotRmsAbvGrd','SalePrice']
-        train = data[self.selected]
+        train = data[selected]
 
         train_labels = train.pop('SalePrice')
 

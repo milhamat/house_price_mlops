@@ -12,14 +12,17 @@ from src.utils.config import log_message
 from sklearn import ensemble
 
 class TrainModel(): 
-    def __init__(self, model_params:dict, dataset:str = "train.csv", train_size:float = 0.1):
-        self.model_params = {'n_estimators':3000, 
-                             'learning_rate':0.05, 
-                             'max_depth':3, 
-                             'max_features':'sqrt',
-                             'min_samples_leaf':15, 
-                             'min_samples_split':10, 
-                             'loss':'huber'}
+    def __init__(self, 
+                 model_params:dict = {'n_estimators':3000, 
+                                      'learning_rate':0.05, 
+                                      'max_depth':3, 
+                                      'max_features':'sqrt',
+                                      'min_samples_leaf':15, 
+                                      'min_samples_split':10, 
+                                      'loss':'huber'},
+                 dataset:str = "train.csv", 
+                 train_size:float = 0.1):
+        self.model_params = model_params 
         self.dataset = dataset
         self.train_size = train_size
         
