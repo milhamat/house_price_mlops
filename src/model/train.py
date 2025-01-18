@@ -24,7 +24,7 @@ def train_and_log_model():
     try:
         log_message("Starting data preprocessing...", "INFO")
         train_features, train_labels = Preprocessing().preprocess(data)
-        log_message("Data preprocessing success...", "INFO")
+        log_message("Data preprocessing success...", "SUCCESS")
     except Exception as e:
         log_message(f"Error in data preprocessing: {e}", "ERROR")
         raise
@@ -42,10 +42,15 @@ def train_and_log_model():
     y_pred = gbr.predict(x_test)
 
     # Evaluate the model
+    log_message("Evaluating the model...", "INFO")
     r2 = r2_score(y_test, y_pred)
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     mse = mean_squared_error(y_test, y_pred)
     mae = mean_absolute_error(y_test, y_pred)
+    log_message(f"R2 : {r2}", "INFO")
+    log_message(f"RMSE : {rmse}", "INFO")
+    log_message(f"MSE : {mse}", "INFO")
+    log_message(f"MAE : {mae}", "INFO")
 
     mlflow.set_tracking_uri('sqlite:///mlflow.db')
 
