@@ -10,6 +10,7 @@ from src.model.data_process import Preprocessing
 from src.utils.config import Config
 from src.utils.config import get_artifact_path
 from src.utils.log import Logger
+from src.utils.utils import log_system_metrics
 from sklearn import ensemble
 
 logger = Logger(Config.PROJECTNAME)
@@ -76,6 +77,7 @@ class TrainModel():
 
         # Log model with MLflow
         with mlflow.start_run(nested=True):
+            log_system_metrics(interval=5)
             mlflow.log_params(self.model_params)
             mlflow.log_metric("R2", r2)
             mlflow.log_metric("RMSE", rmse)
