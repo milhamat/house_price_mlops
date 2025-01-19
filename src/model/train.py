@@ -77,7 +77,7 @@ class TrainModel():
 
         # Log model with MLflow
         with mlflow.start_run(nested=True):
-            log_system_metrics(interval=5)
+            log_system_metrics(interval=5, max_iterations=5)
             mlflow.log_params(self.model_params)
             mlflow.log_metric("R2", r2)
             mlflow.log_metric("RMSE", rmse)

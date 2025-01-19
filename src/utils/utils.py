@@ -3,13 +3,14 @@ import psutil
 import time
 
 # Define a function to log system metrics
-def log_system_metrics(interval=1):
+def log_system_metrics(interval: int = 1, max_iterations: int = 5) -> None:
     """
-    Logs system metrics (CPU, memory, and disk) at regular intervals.
+    Logs system metrics (CPU, memory, and disk) for a specified number of iterations.
     :param interval: Time in seconds between logging.
+    :param max_iterations: Number of times to log metrics before stopping.
     """
     try:
-        while True:
+        for _ in range(max_iterations):
             # Capture system metrics
             cpu_usage = psutil.cpu_percent(interval=None)
             memory_usage = psutil.virtual_memory().percent
@@ -22,10 +23,8 @@ def log_system_metrics(interval=1):
 
             print(f"Logged CPU: {cpu_usage}%, Memory: {memory_usage}%, Disk: {disk_usage}%")
             time.sleep(interval)
-    except KeyboardInterrupt:
-        print("Stopped logging system metrics.")
 
-# # Start an MLflow run
-# with mlflow.start_run():
-#     # Start logging system metrics in a separate thread or process
-#     log_system_metrics(interval=5)  # Log every 5 seconds
+        print("Completed logging system metrics.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
