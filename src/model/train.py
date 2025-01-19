@@ -8,11 +8,11 @@ from sklearn.model_selection import train_test_split
 from mlflow.models.signature import infer_signature
 from src.model.data_process import Preprocessing
 from src.utils.config import Config
+from src.utils.config import get_artifact_path
 from src.utils.log import Logger
 from sklearn import ensemble
 
-config = Config()
-logger = Logger("House Price Prediction v.1")
+logger = Logger(Config.PROJECTNAME)
 
 class TrainModel(): 
     def __init__(self, 
@@ -23,7 +23,7 @@ class TrainModel():
                                       'min_samples_leaf':15, 
                                       'min_samples_split':10, 
                                       'loss':'huber'},
-                 dataset:str = "train.csv", 
+                 dataset:str = Config.DATA_NAME, 
                  train_size:float = 0.1):
         self.model_params = model_params 
         self.dataset = dataset
@@ -32,16 +32,16 @@ class TrainModel():
         
     def train_and_log_model(self):
         # Load dataset
-        data_path = config.get_artifact_path(self.dataset)
+        data_path = get_artifact_path(self.dataset)
         data = pd.read_csv(data_path)
-
+        print(data.shape)
         # DATA PREPROCESSING
         try:
-            logger.info("Starting data preprocessing...", "INFO")
+            logger.info("Starting data preprocessing...")
             train_features, train_labels = Preprocessing().preprocess(data)
-            logger.success("Data preprocessing success...", "SUCCESS")
+            logger.success("Data preprocessing success...")
         except Exception as e:
-            logger.error(f"Error in data preprocessing: {e}", "ERROR")
+            logger.error(f"Error in data preprocessing: {e}")
             raise
 
         # Split the data into training and test sets 
@@ -53,25 +53,25 @@ class TrainModel():
         params = self.model_params
 
         # Train the model
-        logger.info("Starting model training...", "INFO")
+        logger.info("Starting model training...")
         gbr = ensemble.GradientBoostingRegressor(**params).fit(x_train, y_train)
-        logger.success("Model training completed successfully!", "SUCCESS")
+        logger.success("Model training completed successfully!")
         # Predict on the test set
         y_pred = gbr.predict(x_test)
 
         # Evaluate the model
-        logger.info("Evaluating the model...", "INFO")
+        logger.info("Evaluating the model...")
         r2 = r2_score(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         mse = mean_squared_error(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
-        logger.info(f"R2 : {r2}", "INFO")
-        logger.info(f"RMSE : {rmse}", "INFO")
-        logger.info(f"MSE : {mse}", "INFO")
-        logger.info(f"MAE : {mae}", "INFO")
+        logger.info(f"R2 : {r2}")
+        logger.info(f"RMSE : {rmse}")
+        logger.info(f"MSE : {mse}")
+        logger.info(f"MAE : {mae}")
 
         mlflow.set_tracking_uri('sqlite:///mlflow.db')
-        mlflow.set_experiment("House Price Prediction v.1")
+        mlflow.set_experiment(Config.PROJECTNAME)
         mlflow.enable_system_metrics_logging()
 
         # Log model with MLflow
@@ -87,22 +87,22 @@ class TrainModel():
             signature = infer_signature(x_train, gbr.predict(x_train))
             
             mlflow.sklearn.log_model(gbr, 
-                                    artifact_path="models",
+                                    artifact_path=Config.ARTIFACT_MODEL,
                                     signature=signature,
                                     input_example=x_test[:5],
                                     registered_model_name="tracking-quickstart-house-price-prediction",
                                     )
             
             # Log the training dataset as an artifact
-            mlflow.log_artifact(data_path, artifact_path="datasets")
+            mlflow.log_artifact(data_path, artifact_path=Config.ARTIFACT_DATASET)
 
         # Save the model locally
-        logger.info("model.pkl saving", "INFO")
-        model_path = config.get_artifact_path("models", "model.pkl")
+        logger.info("model.pkl saving")
+        model_path = get_artifact_path(Config.ARTIFACT_MODEL, Config.MODEL_NAME)
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
         with open(model_path, "wb") as f:
             pickle.dump(gbr, f)
-        logger.success("model.pkl saving", "SUCCESS")
+        logger.success("model.pkl saving")
 
 
 
