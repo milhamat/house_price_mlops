@@ -1,10 +1,9 @@
 import os
 import pickle
 import pandas as pd
-from src.utils.config import Config
+from src.utils.log import Logger
 
-config = Config()
-
+logger = Logger("House Price Prediction v.1")
 class LoadModel:
     def __init__(self, model_path:str = "artifacts"):
         self.model_path = model_path
@@ -16,19 +15,19 @@ class LoadModel:
         # Get the absolute path to the model
         try:
             # Load the model using MLflow
-            config.log_message("Model loaded...", "INFO")
+            logger.info("Model loaded...", "INFO")
             model_path = os.path.join(f"{self.model_path}", "models", "model.pkl")
             with open(model_path, "rb") as f:
                 model = pickle.load(f)
-            config.log_message(f"Model loaded successfully from: {self.model_path}", "SUCCESS")
+            logger.success(f"Model loaded successfully from: {self.model_path}", "SUCCESS")
             return model
         except Exception as e:
             print(f"Error loading model: {e}")
-            config.log_message(f"Error loading model: {e}", "ERROR")
+            logger.error(f"Error loading model: {e}", "ERROR")
             raise
     
     def predict(self, data:pd.DataFrame)-> pd.DataFrame:
-        config.log_message("Model predicting..", "INFO")
+        logger.info("Model predicting..", "INFO")
         model = self.load_model()
-        config.log_message("Model predicting successfully...", "SUCCESS")
+        logger.success("Model predicting successfully...", "SUCCESS")
         return model.predict(data)
